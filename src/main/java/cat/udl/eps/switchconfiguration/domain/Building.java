@@ -35,7 +35,7 @@ public class Building {
     private long longitude;
 
     //@OneToMany(fetch = FetchType.EAGER, cascade = ALL)
-    @OneToMany(mappedBy = "isIn", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInBuilding", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Floor> floors = new ArrayList<>();

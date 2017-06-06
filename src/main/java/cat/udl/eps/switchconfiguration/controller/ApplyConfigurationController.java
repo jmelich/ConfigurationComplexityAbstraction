@@ -34,8 +34,8 @@ public class ApplyConfigurationController {
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
         Connector connector = connectorRepository.findOne(id);
-
-
+        int usedPortInEquipment = connector.getEquipmentPort();
+        Long equipmentIP = connector.getIsInEquipment().getId();
 
     }
 }

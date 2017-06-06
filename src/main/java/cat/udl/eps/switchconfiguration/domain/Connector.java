@@ -33,6 +33,8 @@ public class Connector {
 
     private long longitude;
 
+    private int equipmentPort;
+
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)

@@ -19,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Floor{
+public class Connector {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,20 +29,19 @@ public class Floor{
 
     private String description;
 
+    private long latitude;
+
+    private long longitude;
+
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Building isInBuilding;
+    private Equipment isInEquipment;
 
-    @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
+    @ManyToOne
+    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Dealer> dealers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Connector> connectors = new ArrayList<>();
+    private Equipment isInFloor;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

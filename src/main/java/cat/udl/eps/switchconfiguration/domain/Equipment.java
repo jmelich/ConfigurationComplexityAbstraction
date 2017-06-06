@@ -3,8 +3,6 @@ package cat.udl.eps.switchconfiguration.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -13,15 +11,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static javax.persistence.CascadeType.ALL;
 
 
 @Entity
 @Data
-public class Building {
+public class Dealer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -31,20 +25,10 @@ public class Building {
 
     private String description;
 
-    private long latitude;
-
-    private long longitude;
-
-    //@OneToMany(fetch = FetchType.EAGER, cascade = ALL)
-    @OneToMany(mappedBy = "isInBuilding", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Floor> floors = new ArrayList<>();
-
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Campus isInCampus;
+    private Floor isInFloor;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

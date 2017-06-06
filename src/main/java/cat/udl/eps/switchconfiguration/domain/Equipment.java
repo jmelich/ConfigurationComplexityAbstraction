@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
-public class Dealer {
+public class Equipment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,7 +28,7 @@ public class Dealer {
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Floor isInFloor;
+    private Dealer isInDealer;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

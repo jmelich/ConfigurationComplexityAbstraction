@@ -29,6 +29,9 @@ public class Equipment {
 
     private String description;
 
+    @NotBlank
+    private String IP;
+
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)

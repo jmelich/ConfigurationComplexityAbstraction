@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
-public class Room {
+public class Dealer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

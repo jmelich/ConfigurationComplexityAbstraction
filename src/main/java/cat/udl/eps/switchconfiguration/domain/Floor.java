@@ -37,7 +37,7 @@ public class Floor{
     @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Room> rooms = new ArrayList<>();
+    private List<Dealer> dealers = new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

@@ -32,6 +32,12 @@ public class Equipment {
     @NotBlank
     private String IP;
 
+    @NotBlank
+    private String username;
+
+    @NotBlank
+    private String password;
+
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)

@@ -11,17 +11,14 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.CascadeType.ALL;
-
 
 @Entity
 @Data
-public class Building {
+public class Campus {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,15 +33,10 @@ public class Building {
     private long longitude;
 
     //@OneToMany(fetch = FetchType.EAGER, cascade = ALL)
-    @OneToMany(mappedBy = "isInBuilding", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInCampus", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Floor> floors = new ArrayList<>();
-
-    @ManyToOne
-    @NotNull
-    @JsonIdentityReference(alwaysAsId = true)
-    private Building isInCampus;
+    private List<Building> buildings = new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

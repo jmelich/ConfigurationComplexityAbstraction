@@ -43,8 +43,8 @@ public class ApplyConfigurationController {
 
         int usedPortInEquipment = connector.getEquipmentPort();
         String equipmentIP = equipment.getIP();
-        String username = "";
-        String password = "";
+        String username = equipment.getUsername();
+        String password = equipment.getPassword();
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -53,7 +53,9 @@ public class ApplyConfigurationController {
         ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
 
         if(response.getStatusCode() == HttpStatus.OK){
-            //do something
+            //make call to get available speeds
+        }else{
+            logger.error("Cannot locate equipment or username and password are wrong");
         }
 
 

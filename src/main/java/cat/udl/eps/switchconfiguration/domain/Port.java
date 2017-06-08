@@ -19,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Connector {
+public class Port {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,26 +29,17 @@ public class Connector {
 
     private String description;
 
-    private long latitude;
-
-    private long longitude;
-
-    private int equipmentPort;
+    private int portNumber;
 
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Equipment isInEquipment;
+    private Equipment belongsTo;
 
-    @ManyToOne
+    @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Equipment isInFloor;
-
-    @OneToOne(fetch=FetchType.EAGER)
-    @NotNull
-    @JsonIdentityReference(alwaysAsId = true)
-    private Port connectedTo;
+    private Connector connector;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty
@@ -57,8 +48,5 @@ public class Connector {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @LastModifiedDate
     private ZonedDateTime lastModified;
-
-
-
 
 }

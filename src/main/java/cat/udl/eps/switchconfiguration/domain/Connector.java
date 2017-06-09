@@ -36,17 +36,14 @@ public class Connector {
     private int equipmentPort;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Equipment isInEquipment;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
-    private Equipment isInFloor;
+    private Floor isInFloor;
 
     @OneToOne(fetch=FetchType.EAGER)
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Port connectedTo;
 

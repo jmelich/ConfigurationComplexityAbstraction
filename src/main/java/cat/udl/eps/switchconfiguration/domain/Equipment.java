@@ -31,10 +31,10 @@ public class Equipment {
 
     private String description;
 
-    @NotBlank
+
     private int numberOfPorts;
 
-    @NotBlank
+    //@NotBlank
     private String IP;
 
     @NotBlank
@@ -44,7 +44,6 @@ public class Equipment {
     private String password;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Dealer isInDealer;
 
@@ -56,7 +55,7 @@ public class Equipment {
     @OneToMany(mappedBy = "belongsTo", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private Map<String, Port> ports= new HashMap<>();
+    private List<Port> ports= new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

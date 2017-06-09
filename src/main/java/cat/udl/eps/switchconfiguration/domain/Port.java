@@ -32,12 +32,10 @@ public class Port {
     private int portNumber;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Equipment belongsTo;
 
     @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Connector connector;
 

@@ -57,6 +57,7 @@ public class ApplyConfigurationController {
             //make call to get available speeds
             URL = String.format("https://%s/cli/aos?&cmd=show+interfaces+%s",equipmentIP,usedPortInEquipment);
             response = restTemplate.getForEntity(URL, String.class);
+            logger.info(response.getBody());
             //return response to client
         }else{
             logger.error("Cannot locate equipment or username and password are wrong");

@@ -2,6 +2,7 @@ package cat.udl.eps.switchconfiguration.controller;
 
 import cat.udl.eps.switchconfiguration.domain.Connector;
 import cat.udl.eps.switchconfiguration.domain.Equipment;
+import cat.udl.eps.switchconfiguration.domain.Port;
 import cat.udl.eps.switchconfiguration.repository.ConnectorRepository;
 import cat.udl.eps.switchconfiguration.repository.EquipmentRepository;
 import org.slf4j.Logger;
@@ -54,6 +55,9 @@ public class ApplyConfigurationController {
 
         if(response.getStatusCode() == HttpStatus.OK){
             //make call to get available speeds
+            URL = String.format("https://%s/cli/aos?&cmd=show+interfaces+%s",equipmentIP,usedPortInEquipment);
+            response = restTemplate.getForEntity(URL, String.class);
+            //return response to client
         }else{
             logger.error("Cannot locate equipment or username and password are wrong");
         }

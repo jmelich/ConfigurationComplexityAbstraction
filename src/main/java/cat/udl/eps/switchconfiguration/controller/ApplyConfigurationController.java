@@ -65,4 +65,74 @@ public class ApplyConfigurationController {
 
 
     }
+
+
+    @RequestMapping(value = "/connectors/{port}/enablePort", method = RequestMethod.GET)
+    @PreAuthorize("isAuthenticated()")
+    /*public @ResponseBody UserDetails getCurrentUser() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }*/
+    public @ResponseBody void enablePort(@PathVariable("port") Long port) {
+
+        logger.info("User Requested to Enable a Port: "+String.valueOf(port));
+
+        Connector connector = connectorRepository.findOne(port);
+        Equipment equipment = connector.getIsInEquipment();
+
+        int usedPortInEquipment = connector.getEquipmentPort();
+        String equipmentIP = equipment.getIP();
+        String username = equipment.getUsername();
+        String password = equipment.getPassword();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String URL = String.format("https://%s/auth/?&username=%s&password=%s",equipmentIP,username,password);
+
+        ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
+
+        if(response.getStatusCode() == HttpStatus.OK){
+            //make call to get available speeds
+            URL = String.format("https://%s/cli/aos?&cmd=interfaces+%s+admin-state+enable",equipmentIP,usedPortInEquipment);
+            response = restTemplate.getForEntity(URL, String.class);
+            logger.info(response.getBody());
+            //return response to client
+        }else{
+            logger.error("Cannot locate equipment or username and password are wrong");
+        }
+    }
+
+
+    @RequestMapping(value = "/connectors/{port}/disablePort", method = RequestMethod.GET)
+    @PreAuthorize("isAuthenticated()")
+    /*public @ResponseBody UserDetails getCurrentUser() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }*/
+    public @ResponseBody void disablePort(@PathVariable("port") Long port) {
+
+        logger.info("User Requested to Disable a Port: "+String.valueOf(port));
+
+        Connector connector = connectorRepository.findOne(port);
+        Equipment equipment = connector.getIsInEquipment();
+
+        int usedPortInEquipment = connector.getEquipmentPort();
+        String equipmentIP = equipment.getIP();
+        String username = equipment.getUsername();
+        String password = equipment.getPassword();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String URL = String.format("https://%s/auth/?&username=%s&password=%s",equipmentIP,username,password);
+
+        ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
+
+        if(response.getStatusCode() == HttpStatus.OK){
+            //make call to get available speeds
+            URL = String.format("https://%s/cli/aos?&cmd=interfaces+%s+admin-state+disable",equipmentIP,usedPortInEquipment);
+            response = restTemplate.getForEntity(URL, String.class);
+            logger.info(response.getBody());
+            //return response to client
+        }else{
+            logger.error("Cannot locate equipment or username and password are wrong");
+        }
+    }
 }

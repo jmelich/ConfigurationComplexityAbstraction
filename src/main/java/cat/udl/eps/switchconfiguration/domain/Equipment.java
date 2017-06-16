@@ -14,7 +14,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -29,7 +31,10 @@ public class Equipment {
 
     private String description;
 
-    @NotBlank
+
+    private int numberOfPorts;
+
+    //@NotBlank
     private String IP;
 
     @NotBlank
@@ -42,7 +47,6 @@ public class Equipment {
     private int positionInStack;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Dealer isInDealer;
 
@@ -50,6 +54,11 @@ public class Equipment {
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Connector> connectors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "belongsTo", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIdentityReference(alwaysAsId = true)
+    private List<Port> ports= new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

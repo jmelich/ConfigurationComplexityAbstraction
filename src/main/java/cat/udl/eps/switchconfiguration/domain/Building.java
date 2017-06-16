@@ -42,7 +42,6 @@ public class Building {
     private List<Floor> floors = new ArrayList<>();
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Campus isInCampus;
 

@@ -30,7 +30,6 @@ public class Floor{
     private String description;
 
     @ManyToOne
-    @NotNull
     @JsonIdentityReference(alwaysAsId = true)
     private Building isInBuilding;
 

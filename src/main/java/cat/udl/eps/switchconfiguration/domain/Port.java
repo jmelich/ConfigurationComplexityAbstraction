@@ -11,6 +11,7 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Campus extends UriEntity<Long> {
+public class Port {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,15 +29,15 @@ public class Campus extends UriEntity<Long> {
 
     private String description;
 
-    private long latitude;
+    private int portNumber;
 
-    private long longitude;
-
-    //@OneToMany(fetch = FetchType.EAGER, cascade = ALL)
-    @OneToMany(mappedBy = "isInCampus", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
+    @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Building> buildings = new ArrayList<>();
+    private Equipment belongsTo;
+
+    @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Connector connector;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty
@@ -45,8 +46,5 @@ public class Campus extends UriEntity<Long> {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @LastModifiedDate
     private ZonedDateTime lastModified;
-
-
-
 
 }

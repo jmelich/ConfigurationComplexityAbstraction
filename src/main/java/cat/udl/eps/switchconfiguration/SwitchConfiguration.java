@@ -57,8 +57,8 @@ public class SwitchConfiguration {
 		e.setTitle("Switch 1");
 		e.setNumberOfPorts(25);
 		e.setIP("192.168.1.1");
-		e.setUsername("user");
-		e.setPassword("password");
+		e.setUsername("admin");
+		e.setPassword("switch");
 		e.setIsInDealer(d);
 
 

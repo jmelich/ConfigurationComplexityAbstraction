@@ -38,6 +38,9 @@ public class Equipment {
     @NotBlank
     private String password;
 
+    //@NotBlank
+    private int positionInStack;
+
     @ManyToOne
     @NotNull
     @JsonIdentityReference(alwaysAsId = true)

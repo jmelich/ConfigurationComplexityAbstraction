@@ -2,25 +2,19 @@ package cat.udl.eps.switchconfiguration.controller;
 
 import cat.udl.eps.switchconfiguration.domain.Connector;
 import cat.udl.eps.switchconfiguration.domain.Equipment;
-import cat.udl.eps.switchconfiguration.domain.Port;
 import cat.udl.eps.switchconfiguration.repository.ConnectorRepository;
-import cat.udl.eps.switchconfiguration.repository.EquipmentRepository;
-import org.apache.coyote.http2.ConnectionSettingsBase;
-import org.apache.http.HttpClientConnection;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.elasticsearch.jest.HttpClientConfigBuilderCustomizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-//import sun.net.www.http.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.util.Collections;
+import javax.net.ssl.SSLContext;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 /**
  * Created by ubuntudesktop on 6/06/17.
@@ -48,7 +44,7 @@ public class ApplyConfigurationController {
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
-    public @ResponseBody void getAvailableSpeeds(@PathVariable("id") Long id) {
+    public @ResponseBody void getAvailableSpeeds(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
@@ -60,16 +56,37 @@ public class ApplyConfigurationController {
         String username = equipment.getUsername();
         String password = equipment.getPassword();
 
+        /*CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+
         //RestTemplate restTemplate = new RestTemplate(Collections.singletonList(new GsonHttpMessageConverter()));
-        /*RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
         HttpClient httpClient = HttpClientBuilder.create()
                 .setMaxConnTotal(1000)
                 .setMaxConnPerRoute(1000)
-                .build();
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));*/
-        RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpComponentsClientHttpRequestFactory());
+                .build();*/
+        //restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+        //RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpComponentsClientHttpRequestFactory());
 
-        String URL = String.format("http://%s/auth/?&username=%s&password=%s",equipmentIP,username,password);
+        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build();
+
+        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLSocketFactory(csf)
+                .build();
+
+        HttpComponentsClientHttpRequestFactory requestFactory =
+                new HttpComponentsClientHttpRequestFactory();
+
+        requestFactory.setHttpClient(httpClient);
+
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+        String URL = String.format("https://%s/auth/?&username=%s&password=%s",equipmentIP,username,password);
         logger.info(URL);
 
         ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
@@ -77,7 +94,7 @@ public class ApplyConfigurationController {
 
         if(response.getStatusCode() == HttpStatus.OK){
             //make call to get available speeds
-            URL = String.format("http://%s/cli/aos?&cmd=show+interfaces+1/1/%s",equipmentIP,usedPortInEquipment);
+            URL = String.format("https://%s/cli/aos?&cmd=show+interfaces+1/1/%s",equipmentIP,usedPortInEquipment);
             logger.info(URL);
             try{
                 response = restTemplate.getForEntity(URL, String.class);

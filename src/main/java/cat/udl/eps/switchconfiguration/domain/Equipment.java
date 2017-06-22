@@ -50,15 +50,10 @@ public class Equipment {
     @JsonIdentityReference(alwaysAsId = true)
     private Dealer isInDealer;
 
-    @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Connector> connectors = new ArrayList<>();
-
     @OneToMany(mappedBy = "belongsTo", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Port> ports= new ArrayList<>();
+    private List<Card> cards = new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty

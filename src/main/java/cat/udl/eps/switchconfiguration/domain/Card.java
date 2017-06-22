@@ -11,51 +11,29 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Entity
 @Data
-public class Equipment {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    private String title;
+    //@NotBlank
+    private int numberOfCard;
 
-    private String description;
-
-
+    //@NotBlank
     private int numberOfPorts;
-
-    //@NotBlank
-    private String IP;
-
-    @NotBlank
-    private String username;
-
-    @NotBlank
-    private String password;
-
-    //@NotBlank
-    private int positionInStack;
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private Dealer isInDealer;
+    private Equipment belongsTo;
 
-    @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    @JsonIdentityReference(alwaysAsId = true)
-    private List<Connector> connectors = new ArrayList<>();
-
-    @OneToMany(mappedBy = "belongsTo", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInCard", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Port> ports= new ArrayList<>();

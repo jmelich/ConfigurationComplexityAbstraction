@@ -33,7 +33,7 @@ public class Port {
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private Equipment belongsTo;
+    private Card isInCard;
 
     @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
     @JsonIdentityReference(alwaysAsId = true)

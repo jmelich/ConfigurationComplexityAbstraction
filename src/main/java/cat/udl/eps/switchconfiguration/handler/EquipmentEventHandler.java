@@ -27,19 +27,19 @@ public class EquipmentEventHandler {
 
     @HandleAfterCreate
     //@PreAuthorize("hasRole('OWNER')")
-    public void handleEquipmentAfterSave(Equipment equipment) {
-        logger.info("After creating: {}", equipment);
+    public void handleEquipmentAfterSave(Card card) {
+        logger.info("After creating: {}", card);
 
         List<Port> portsList = new ArrayList<>();
-        for(int i=1; i<=equipment.getNumberOfPorts(); i++){
+        for(int i=1; i<=card.getNumberOfPorts(); i++){
             Port p = new Port();
             p.setTitle(String.valueOf(i));
-            p.setBelongsTo(equipment);
+            p.setIsInCard(card);
             portRepository.save(p);
             logger.info("port saved");
         }
         logger.info("After created ports");
-        equipment.setPorts(portsList);
+        card.setPorts(portsList);
     }
 
 

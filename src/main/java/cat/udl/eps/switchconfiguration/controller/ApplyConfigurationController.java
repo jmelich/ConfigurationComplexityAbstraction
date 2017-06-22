@@ -1,7 +1,9 @@
 package cat.udl.eps.switchconfiguration.controller;
 
+import cat.udl.eps.switchconfiguration.domain.Card;
 import cat.udl.eps.switchconfiguration.domain.Connector;
 import cat.udl.eps.switchconfiguration.domain.Equipment;
+import cat.udl.eps.switchconfiguration.domain.Port;
 import cat.udl.eps.switchconfiguration.repository.ConnectorRepository;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriTemplate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -49,9 +52,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -74,79 +75,33 @@ public class ApplyConfigurationController {
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
         Connector connector = connectorRepository.findOne(id);
-        Equipment equipment = connector.getIsInEquipment();
+        Port port = connector.getConnectedTo();
+        Card card = port.getIsInCard();
+        Equipment equipment = card.getBelongsTo();
 
-        int usedPortInEquipment = connector.getEquipmentPort();
-        String equipmentIP = equipment.getIP();
-        String username = equipment.getUsername();
-        String password = equipment.getPassword();
 
-        /*CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
+        Map<String, String> urlParameters = new HashMap<>();
+        urlParameters.put("equipmentIP", equipment.getIP());
+        urlParameters.put("username", equipment.getUsername());
+        urlParameters.put("password", equipment.getPassword());
 
-        //RestTemplate restTemplate = new RestTemplate(Collections.singletonList(new GsonHttpMessageConverter()));
+
         RestTemplate restTemplate = new RestTemplate();
-        HttpClient httpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(1000)
-                .setMaxConnPerRoute(1000)
-                .build();*/
-        //restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
-        //RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpComponentsClientHttpRequestFactory());
-
-        /*TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                .loadTrustMaterial(null, acceptingTrustStrategy)
-                .build();
-
-        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLSocketFactory(csf)
-                .build();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory();
-
-        requestFactory.setHttpClient(httpClient);
-
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
-
-        String URL = String.format("http://%s/auth/?&username=%s&password=%s",equipmentIP,username,password);
-        logger.info(URL);
-
-        ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
-        logger.info(response.toString());
-
-        logger.info(response.getHeaders().get("Set-Cookie").get(0));
-
-        if(response.getStatusCode() == HttpStatus.OK){
-            //make call to get available speeds
-            URL = String.format("http://%s/cli/aos?&cmd=show+interfaces+1/1/%s",equipmentIP,usedPortInEquipment);
-            logger.info(URL);
-            try{
-                response = restTemplate.getForEntity(URL, String.class);
-            }catch (HttpClientErrorException e){
-                logger.error(response.toString());
-            }
-
-            logger.info(response.toString());
-            //return response to client
-        }else{
-            logger.error("Cannot locate equipment or username and password are wrong");
-        }*/
-
-        //first request
-
-
-
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> forEntity = template.getForEntity("http://192.168.1.1/auth/?&username=admin&password=switch", String.class);
+        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
         logger.info(cookies);
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
 
-            RestTemplate restTemplate = new RestTemplate();
+            //urlParameters = new HashMap<String, String>();
+            //urlParameters.put("equipmentIP", equipment.getIP());
+            urlParameters.put("cmdCommand", "show interfaces");
+            urlParameters.put("password", equipment.getPassword());
+            urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
+            urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
+            urlParameters.put("portNumber", String.valueOf(port.getPortNumber()));
+
+            //RestTemplate restTemplate = new RestTemplate();
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Cookie",cookies);
@@ -157,7 +112,7 @@ public class ApplyConfigurationController {
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<String> response = restTemplate.exchange("http://192.168.1.1/cli/aos?cmd=show interfaces 1/1/1", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class);
 
             logger.info(response.toString());
         }

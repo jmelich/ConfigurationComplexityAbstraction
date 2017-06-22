@@ -23,6 +23,7 @@ public class SwitchConfiguration {
 	@Autowired private EquipmentRepository equipmentRepository;
 	@Autowired private ConnectorRepository connectorRepository;
     @Autowired private PortRepository portRepository;
+	@Autowired private CardRepository cardRepository;
     private final Logger logger = LoggerFactory.getLogger(SwitchConfiguration.class);
 
 
@@ -61,6 +62,10 @@ public class SwitchConfiguration {
 		e.setPassword("switch");
 		e.setIsInDealer(d);
 
+		Card card = new Card();
+		card.setNumberOfCard(1);
+		card.setNumberOfPorts(24);
+
 
         Connector con = new Connector();
 
@@ -72,6 +77,7 @@ public class SwitchConfiguration {
 		f.setDealers(Arrays.asList(d));
 		b.setFloors(Arrays.asList(f));
 		c.setBuildings(Arrays.asList(b));
+		card.setBelongsTo(e);
 
 
 
@@ -80,17 +86,19 @@ public class SwitchConfiguration {
         floorRepository.save(f);
         dealerRepository.save(d);
 
+
         equipmentRepository.save(e);
+		cardRepository.save(card);
         List<Port> portsList = new ArrayList<>();
         for(int i=1; i<=e.getNumberOfPorts(); i++){
             Port p = new Port();
             p.setTitle(String.valueOf(i));
-            p.setBelongsTo(e);
+            p.setIsInCard(card);
             portRepository.save(p);
             logger.info("port saved");
         }
         logger.info("After created ports");
-        e.setPorts(portsList);
+        card.setPorts(portsList);
 
         equipmentRepository.save(e);
         con.setConnectedTo(portRepository.findAll().iterator().next());

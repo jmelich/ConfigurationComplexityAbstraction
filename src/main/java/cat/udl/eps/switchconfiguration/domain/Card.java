@@ -11,7 +11,6 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,25 +18,25 @@ import java.util.List;
 
 @Entity
 @Data
-public class Port {
+public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    private String title;
+    //@NotBlank
+    private int numberOfCard;
 
-    private String description;
-
-    private int portNumber;
+    //@NotBlank
+    private int numberOfPorts;
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private Card isInCard;
+    private Equipment belongsTo;
 
-    @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
+    @OneToMany(mappedBy = "isInCard", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private Connector connector;
+    private List<Port> ports= new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @ReadOnlyProperty
@@ -46,5 +45,8 @@ public class Port {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @LastModifiedDate
     private ZonedDateTime lastModified;
+
+
+
 
 }

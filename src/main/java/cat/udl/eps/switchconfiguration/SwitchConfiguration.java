@@ -55,8 +55,9 @@ public class SwitchConfiguration {
 
 
 		Equipment e = new Equipment();
+		e.setPositionInStack(1);
 		e.setTitle("Switch 1");
-		e.setNumberOfPorts(25);
+		e.setNumberOfPorts(24);
 		e.setIP("192.168.1.1");
 		e.setUsername("admin");
 		e.setPassword("switch");
@@ -90,18 +91,23 @@ public class SwitchConfiguration {
         equipmentRepository.save(e);
 		cardRepository.save(card);
         List<Port> portsList = new ArrayList<>();
-        for(int i=1; i<=e.getNumberOfPorts(); i++){
+        Port examplePort = null;
+        for(int i=1; i<=card.getNumberOfPorts(); i++){
             Port p = new Port();
+            if(i==1){
+            	examplePort = p;
+			}
             p.setTitle(String.valueOf(i));
             p.setIsInCard(card);
             portRepository.save(p);
             logger.info("port saved");
+            portsList.add(p);
         }
         logger.info("After created ports");
         card.setPorts(portsList);
 
         equipmentRepository.save(e);
-        con.setConnectedTo(portRepository.findAll().iterator().next());
+        con.setConnectedTo(examplePort);
         connectorRepository.save(con);
 
 	}

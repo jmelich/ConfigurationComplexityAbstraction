@@ -99,7 +99,7 @@ public class ApplyConfigurationController {
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
-            urlParameters.put("portNumber", String.valueOf(port.getPortNumber()));
+            urlParameters.put("portNumber", String.valueOf(port.getTitle()));
 
             //RestTemplate restTemplate = new RestTemplate();
 
@@ -112,7 +112,8 @@ public class ApplyConfigurationController {
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class, urlParameters);
+            //tractament resposta //(?:^ BandWidth \(Megabits\)\s*:\s*(.*?),)(?:.*Duplex\s*:\s(.*?),)
 
             logger.info(response.toString());
         }

@@ -72,7 +72,8 @@ public class ApplyConfigurationController {
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
-    public @ResponseBody void getAvailableSpeeds(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+    @ResponseBody
+    public void getAvailableSpeeds(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
@@ -114,15 +115,15 @@ public class ApplyConfigurationController {
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class, urlParameters);
-            //tractament resposta //(?:^ BandWidth \(Megabits\)\s*:\s*(.*?),)(?:.*Duplex\s*:\s(.*?),)
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} capability", HttpMethod.GET, entity, String.class, urlParameters);
+            /*tractament resposta //(?:^ BandWidth \(Megabits\)\s*:\s*(.*?),)(?:.*Duplex\s*:\s(.*?),)
             String REGEX1 = "(?:^ BandWidth \\(Megabits\\)\\s*:\\s*(.*?),)(?:.*Duplex\\s*:\\s(.*?),)";
             Pattern pattern1 = Pattern.compile(REGEX1);
             Matcher matcher1 = pattern1.matcher(response.getBody());
 
             matcher1.find();
 
-            logger.info("Bandwith:" + matcher1.group(0) + "Negotiation:" );
+            logger.info("Bandwith:" + matcher1.group(0) + "Negotiation:" );*/
 
             logger.info(response.toString());
         }

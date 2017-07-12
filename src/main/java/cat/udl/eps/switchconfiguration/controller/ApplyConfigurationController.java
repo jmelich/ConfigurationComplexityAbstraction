@@ -72,8 +72,8 @@ public class ApplyConfigurationController {
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
-    @ResponseBody
-    public void getAvailableSpeeds(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+
+    public @ResponseBody Map<String, Object>  getAvailableSpeeds(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
@@ -108,25 +108,46 @@ public class ApplyConfigurationController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Cookie",cookies);
-            //headers.set("Accept", "application/json");
-            //headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            //headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Content-Type",MediaType.APPLICATION_JSON_VALUE);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} capability", HttpMethod.GET, entity, String.class, urlParameters);
-            /*tractament resposta //(?:^ BandWidth \(Megabits\)\s*:\s*(.*?),)(?:.*Duplex\s*:\s(.*?),)
-            String REGEX1 = "(?:^ BandWidth \\(Megabits\\)\\s*:\\s*(.*?),)(?:.*Duplex\\s*:\\s(.*?),)";
-            Pattern pattern1 = Pattern.compile(REGEX1);
-            Matcher matcher1 = pattern1.matcher(response.getBody());
 
-            matcher1.find();
+            String[] info = response.getBody().split("\n");
 
-            logger.info("Bandwith:" + matcher1.group(0) + "Negotiation:" );*/
+            String[] available = info[7].split("\\s+");
+            String[] actually = info[8].split("\\s+");
 
-            logger.info(response.toString());
+            Map<String, String> availableSettings = new HashMap<>();
+            Map<String, String> actuallySettings = new HashMap<>();
+            availableSettings.put("PortSpeed", available[6]);
+            availableSettings.put("DuplexMode", available[7].concat("/Auto"));
+
+
+            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} status", HttpMethod.GET, entity, String.class, urlParameters);
+
+            info = response.getBody().split("\n");
+            availableSettings.put("AdministrativeStatus", info[9].split("\\s+")[2]);
+
+            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);
+            info = response.getBody().split("\n");
+            actuallySettings.put("InputBytes", info[7].split("\\s+")[3]);
+            actuallySettings.put("OutputBytes", info[7].split("\\s+")[5]);
+
+
+
+
+            logger.info(response.getBody().toString());
+            logger.info(availableSettings.toString());
+
+            Map<String,Object> returns = new HashMap<>();
+            returns.put("AvailableSettings", availableSettings);
+            returns.put("ActuallySettings", actuallySettings);
+
+            return returns;
         }
+        return null;
     }
 
 

@@ -21,7 +21,7 @@ import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Data
-public class Building {
+public class Building extends UriEntity<Long>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

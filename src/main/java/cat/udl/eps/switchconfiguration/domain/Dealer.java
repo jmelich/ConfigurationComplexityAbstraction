@@ -19,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Dealer {
+public class Dealer  extends UriEntity<Long>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -11,6 +11,6 @@ import java.util.List;
 @RepositoryRestResource
 public interface DealerRepository extends PagingAndSortingRepository<Dealer, Long> {
     List<Dealer> findByDescription(@Param("description") String description);
-    List<Dealer> findByTitle(@Param("title") String title);
+    List<Dealer> findByTitleContaining(@Param("title") String title);
     List<Dealer> findByDescriptionContaining(@Param("description") String description);
 }

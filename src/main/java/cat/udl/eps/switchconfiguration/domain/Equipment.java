@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Entity
 @Data
-public class Equipment {
+public class Equipment extends UriEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

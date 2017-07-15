@@ -11,6 +11,7 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface CardRepository extends PagingAndSortingRepository<Card, Long> {
+    //List<Card> findByBelongsToAndNumberOfCard(@Param("equipment,number") String equipment, int number);
     //List<Card> findByDescription(@Param("description") String description);
     //List<Card> findByTitle(@Param("title") String title);
     //List<Card> findByDescriptionContaining(@Param("description") String description);

@@ -18,7 +18,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Card {
+public class Card  extends UriEntity<Long>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

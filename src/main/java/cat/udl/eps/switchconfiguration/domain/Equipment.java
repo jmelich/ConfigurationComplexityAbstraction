@@ -50,7 +50,7 @@ public class Equipment extends UriEntity<Long> {
     @JsonIdentityReference(alwaysAsId = true)
     private Dealer isInDealer;
 
-    @OneToMany(mappedBy = "belongsTo", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInEquipment", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Card> cards = new ArrayList<>();

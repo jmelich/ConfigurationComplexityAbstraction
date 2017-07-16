@@ -23,6 +23,9 @@ public class Card  extends UriEntity<Long>  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
+    private String title;
+
     //@NotBlank
     private int numberOfCard;
 
@@ -31,7 +34,7 @@ public class Card  extends UriEntity<Long>  {
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private Equipment belongsTo;
+    private Equipment isInEquipment;
 
     @OneToMany(mappedBy = "isInCard", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)

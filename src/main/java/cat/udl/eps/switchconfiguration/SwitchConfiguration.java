@@ -64,6 +64,7 @@ public class SwitchConfiguration {
 		e.setIsInDealer(d);
 
 		Card card = new Card();
+		card.setTitle("Card 1");
 		card.setNumberOfCard(1);
 		card.setNumberOfPorts(24);
 
@@ -78,7 +79,7 @@ public class SwitchConfiguration {
 		f.setDealers(Arrays.asList(d));
 		b.setFloors(Arrays.asList(f));
 		c.setBuildings(Arrays.asList(b));
-		card.setBelongsTo(e);
+		card.setIsInEquipment(e);
 
 
 

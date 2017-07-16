@@ -80,7 +80,7 @@ public class ApplyConfigurationController {
         Connector connector = connectorRepository.findOne(id);
         Port port = connector.getConnectedTo();
         Card card = port.getIsInCard();
-        Equipment equipment = card.getBelongsTo();
+        Equipment equipment = card.getIsInEquipment();
 
 
         Map<String, String> urlParameters = new HashMap<>();

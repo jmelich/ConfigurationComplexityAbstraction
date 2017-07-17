@@ -25,7 +25,7 @@ public class EquipmentEventHandler {
     @Autowired
     private PortRepository portRepository;
 
-    @HandleAfterCreate
+    /*@HandleAfterCreate
     //@PreAuthorize("hasRole('OWNER')")
     public void handleEquipmentAfterSave(Card card) {
         logger.info("After creating: {}", card);
@@ -40,7 +40,7 @@ public class EquipmentEventHandler {
         }
         logger.info("After created ports");
         card.setPorts(portsList);
-    }
+    }*/
 
 
 }

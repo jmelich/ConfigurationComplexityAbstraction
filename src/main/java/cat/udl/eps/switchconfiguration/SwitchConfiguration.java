@@ -1,7 +1,7 @@
 package cat.udl.eps.switchconfiguration;
 
 import cat.udl.eps.switchconfiguration.domain.*;
-import cat.udl.eps.switchconfiguration.handler.EquipmentEventHandler;
+import cat.udl.eps.switchconfiguration.handler.CardEventHandler;
 import cat.udl.eps.switchconfiguration.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

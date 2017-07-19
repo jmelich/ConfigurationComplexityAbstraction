@@ -1,6 +1,7 @@
 package cat.udl.eps.switchconfiguration.repository;
 
 import cat.udl.eps.switchconfiguration.domain.Building;
+import cat.udl.eps.switchconfiguration.domain.Campus;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -13,4 +14,6 @@ public interface BuildingRepository extends PagingAndSortingRepository<Building,
     List<Building> findByDescription(@Param("description") String description);
     List<Building> findByTitleContaining(@Param("title") String title);
     List<Building> findByDescriptionContaining(@Param("description") String description);
+    List<Building> findByTitleContainingAndIsInCampus(@Param("title") String title, @Param("campus") Campus campus);
+    //List<Building> findByIsInCampusAndTitleContaining(@Param("title") String title, @Param("campus") Campus campus);
 }

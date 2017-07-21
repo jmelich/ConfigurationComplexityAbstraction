@@ -11,6 +11,6 @@ import java.util.List;
 @RepositoryRestResource
 public interface CampusRepository extends PagingAndSortingRepository<Campus, Long> {
     List<Campus> findByDescription(@Param("description") String description);
-    List<Campus> findByTitleContaining(@Param("title") String title);
+    List<Campus> findByTitleContainingIgnoreCase(@Param("title") String title);
     List<Campus> findByDescriptionContaining(@Param("description") String description);
 }

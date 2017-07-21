@@ -12,8 +12,8 @@ import java.util.List;
 @RepositoryRestResource
 public interface BuildingRepository extends PagingAndSortingRepository<Building, Long> {
     List<Building> findByDescription(@Param("description") String description);
-    List<Building> findByTitleContaining(@Param("title") String title);
+    List<Building> findByTitleContainingIgnoreCase(@Param("title") String title);
     List<Building> findByDescriptionContaining(@Param("description") String description);
-    List<Building> findByTitleContainingAndIsInCampus(@Param("title") String title, @Param("campus") Campus campus);
+    List<Building> findByTitleContainingIgnoreCaseAndIsInCampus(@Param("title") String title, @Param("campus") Campus campus);
     //List<Building> findByIsInCampusAndTitleContaining(@Param("title") String title, @Param("campus") Campus campus);
 }

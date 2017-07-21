@@ -32,7 +32,7 @@ public class SwitchConfiguration {
 		SpringApplication.run(SwitchConfiguration.class, args);
 	}
 
-	@PostConstruct
+	/*@PostConstruct
 	public void starting(){
 
 		Campus c = new Campus();
@@ -111,5 +111,5 @@ public class SwitchConfiguration {
         con.setConnectedTo(examplePort);
         connectorRepository.save(con);
 
-	}
+	}*/
 }

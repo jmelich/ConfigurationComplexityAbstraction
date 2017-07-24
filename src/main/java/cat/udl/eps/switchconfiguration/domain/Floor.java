@@ -29,6 +29,9 @@ public class Floor  extends UriEntity<Long>  {
 
     private String description;
 
+    @Column(length = 5 * 1024 * 1024) // 5MB
+    private String picture;
+
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
     private Building isInBuilding;

@@ -32,7 +32,7 @@ public class Equipment extends UriEntity<Long> {
     private String description;
 
 
-    private int numberOfPorts;
+    //private int numberOfPorts;
 
     //@NotBlank
     private String IP;

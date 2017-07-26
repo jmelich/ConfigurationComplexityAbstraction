@@ -29,9 +29,9 @@ public class Connector extends UriEntity<Long>   {
 
     private String description;
 
-    private long latitude;
+    private double latitude;
 
-    private long longitude;
+    private double longitude;
 
     private int equipmentPort;
 

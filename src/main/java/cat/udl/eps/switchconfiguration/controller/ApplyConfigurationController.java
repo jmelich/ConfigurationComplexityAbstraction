@@ -131,8 +131,19 @@ public class ApplyConfigurationController {
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);
             info = response.getBody().split("\n");
-            actuallySettings.put("InputBytes", info[7].split("\\s+")[3]);
-            actuallySettings.put("OutputBytes", info[7].split("\\s+")[5]);
+            try{
+                actuallySettings.put("InputBytes", info[7].split("\\s+")[3]);
+            }catch (ArrayIndexOutOfBoundsException e){
+                actuallySettings.put("InputBytes", "0");
+            }
+
+            try{
+                actuallySettings.put("OutputBytes", info[7].split("\\s+")[5]);
+            }catch(ArrayIndexOutOfBoundsException e){
+                actuallySettings.put("OutputBytes", "0");
+            }
+
+
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan");
@@ -148,6 +159,22 @@ public class ApplyConfigurationController {
                 }
             }
             availableSettings.put("AvailableVLANs", vlans);
+
+
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
+            urlParameters.put("cmdCommand", "show vlan members port");
+            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class, urlParameters);
+            logger.info(response.getBody());
+            info = response.getBody().split("\n");
+            vlans ="";
+            for(int i=7; i<info.length-5; i++){
+                if(i==7){
+                    vlans = vlans.concat(info[i].split("\\s+")[1]);
+                }else{
+                    vlans = vlans.concat("/" + info[i].split("\\s+")[1]);
+                }
+            }
+            actuallySettings.put("ConnectedToVLANs", vlans);
 
             logger.info(availableSettings.toString());
 

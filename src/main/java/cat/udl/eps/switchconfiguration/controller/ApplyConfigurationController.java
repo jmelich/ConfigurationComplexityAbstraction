@@ -88,7 +88,7 @@ public class ApplyConfigurationController {
         urlParameters.put("username", equipment.getUsername());
         urlParameters.put("password", equipment.getPassword());
 
-
+        //LOGIN AND GET COOKIES
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
@@ -96,22 +96,20 @@ public class ApplyConfigurationController {
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
 
-            //urlParameters = new HashMap<String, String>();
-            //urlParameters.put("equipmentIP", equipment.getIP());
+            //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "show interfaces");
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
             urlParameters.put("portNumber", String.valueOf(port.getTitle()));
 
-            //RestTemplate restTemplate = new RestTemplate();
-
+            //SET COOKIES TO THE HEADER
             HttpHeaders headers = new HttpHeaders();
             headers.set("Cookie",cookies);
             headers.set("Content-Type",MediaType.APPLICATION_JSON_VALUE);
-
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
             ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} capability", HttpMethod.GET, entity, String.class, urlParameters);
 
             String[] info = response.getBody().split("\n");
@@ -124,27 +122,39 @@ public class ApplyConfigurationController {
             availableSettings.put("PortSpeed", available[6]);
             availableSettings.put("DuplexMode", available[7].concat("/Auto"));
 
-
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X status"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} status", HttpMethod.GET, entity, String.class, urlParameters);
 
             info = response.getBody().split("\n");
-            availableSettings.put("AdministrativeStatus", info[9].split("\\s+")[2]);
+            actuallySettings.put("AdministrativeStatus", info[9].split("\\s+")[2]);
 
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);
             info = response.getBody().split("\n");
             actuallySettings.put("InputBytes", info[7].split("\\s+")[3]);
             actuallySettings.put("OutputBytes", info[7].split("\\s+")[5]);
 
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
+            urlParameters.put("cmdCommand", "show vlan");
+            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+            logger.info(response.getBody());
+            info = response.getBody().split("\n");
+            String vlans ="";
+            for(int i=7; i<info.length-5; i++){
+                if(i==7){
+                    vlans = vlans.concat(info[i].split("\\s+")[0]);
+                }else{
+                    vlans = vlans.concat("/" + info[i].split("\\s+")[0]);
+                }
+            }
+            availableSettings.put("AvailableVLANs", vlans);
 
-
-
-            logger.info(response.getBody().toString());
             logger.info(availableSettings.toString());
 
+            //RETURN VALUES TO CLIENT
             Map<String,Object> returns = new HashMap<>();
             returns.put("AvailableSettings", availableSettings);
             returns.put("ActuallySettings", actuallySettings);
-
             return returns;
         }
         return null;

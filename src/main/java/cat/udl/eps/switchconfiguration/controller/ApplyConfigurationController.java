@@ -68,7 +68,7 @@ public class ApplyConfigurationController {
                 vlans = vlans.concat(" "+ entry);
             }
             //URL PARAMETERS TO SET TARGET EQUIPMENT
-            urlParameters.put("cmdCommand", "vlan "+ vlans );
+            urlParameters.put("cmdCommand", "vlan"+ vlans + " port members");
             logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
@@ -82,7 +82,7 @@ public class ApplyConfigurationController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} members {routerInStack}/{cardNumber}/{portNumber} untagged", HttpMethod.GET, entity, String.class, urlParameters);
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} untagged", HttpMethod.GET, entity, String.class, urlParameters);
 
         }
     }
@@ -139,5 +139,55 @@ public class ApplyConfigurationController {
             ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} members {routerInStack}/{cardNumber}/{portNumber} untagged", HttpMethod.GET, entity, String.class, urlParameters);
 
         }
+    }
+
+    @RequestMapping(value = "/connectors/{id}/setVLAN", method = RequestMethod.POST)
+    @PreAuthorize("isAuthenticated()")
+    /*public @ResponseBody UserDetails getCurrentUser() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }*/
+
+    public @ResponseBody
+    HttpStatus setVLAN(@PathVariable("id") Long id, @RequestParam("vlan") String vlan) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+        logger.info("User Requested To Add Connector to VLAN: " + String.valueOf(id));
+
+        Connector connector = connectorRepository.findOne(id);
+        Port port = connector.getConnectedTo();
+        Card card = port.getIsInCard();
+        Equipment equipment = card.getIsInEquipment();
+
+
+        Map<String, String> urlParameters = new HashMap<>();
+        urlParameters.put("equipmentIP", equipment.getIP());
+        urlParameters.put("username", equipment.getUsername());
+        urlParameters.put("password", equipment.getPassword());
+
+        //LOGIN AND GET COOKIES
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
+        String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
+        logger.info(cookies);
+
+        if (forEntity.getStatusCode() == HttpStatus.OK) {
+            //URL PARAMETERS TO SET TARGET EQUIPMENT
+            urlParameters.put("cmdCommand", "vlan " + vlan + " members port");
+            logger.info(urlParameters.get("cmdCommand"));
+            urlParameters.put("password", equipment.getPassword());
+            urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
+            urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
+            urlParameters.put("portNumber", String.valueOf(port.getTitle()));
+
+            //SET COOKIES TO THE HEADER
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Cookie", cookies);
+            headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} untagged", HttpMethod.GET, entity, String.class, urlParameters);
+            return response.getStatusCode();//NEED CHECK
+        }
+        return forEntity.getStatusCode();//NEED CHECK
     }
 }

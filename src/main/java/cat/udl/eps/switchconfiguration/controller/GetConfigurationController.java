@@ -29,8 +29,8 @@ import java.util.*;
  * Created by ubuntudesktop on 6/06/17.
  */
 @Controller
-public class ConfigurationController {
-    private final Logger logger = LoggerFactory.getLogger(ConfigurationController.class);
+public class GetConfigurationController {
+    private final Logger logger = LoggerFactory.getLogger(GetConfigurationController.class);
 
 
     @Autowired private ConnectorRepository connectorRepository;

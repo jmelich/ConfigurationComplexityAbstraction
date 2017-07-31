@@ -190,4 +190,55 @@ public class ApplyConfigurationController {
         }
         return forEntity.getStatusCode();//NEED CHECK
     }
+
+    @RequestMapping(value = "/connectors/{id}/setAdministrativeStatus", method = RequestMethod.POST)
+    @PreAuthorize("isAuthenticated()")
+    /*public @ResponseBody UserDetails getCurrentUser() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }*/
+
+    public @ResponseBody
+    HttpStatus setAdministrativeStatus(@PathVariable("id") Long id, @RequestParam("status") String status) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+        logger.info("User Requested To Change Connector status to: " + status);
+
+        Connector connector = connectorRepository.findOne(id);
+        Port port = connector.getConnectedTo();
+        Card card = port.getIsInCard();
+        Equipment equipment = card.getIsInEquipment();
+
+
+        Map<String, String> urlParameters = new HashMap<>();
+        urlParameters.put("equipmentIP", equipment.getIP());
+        urlParameters.put("username", equipment.getUsername());
+        urlParameters.put("password", equipment.getPassword());
+
+        //LOGIN AND GET COOKIES
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
+        String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
+        logger.info(cookies);
+
+        if (forEntity.getStatusCode() == HttpStatus.OK) {
+            //URL PARAMETERS TO SET TARGET EQUIPMENT
+            urlParameters.put("cmdCommand", "interfaces ");
+            logger.info(urlParameters.get("cmdCommand"));
+            urlParameters.put("password", equipment.getPassword());
+            urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
+            urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
+            urlParameters.put("portNumber", String.valueOf(port.getTitle()));
+            urlParameters.put("status",status);
+
+            //SET COOKIES TO THE HEADER
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Cookie", cookies);
+            headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
+            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} admin-state {status}", HttpMethod.GET, entity, String.class, urlParameters);
+            return response.getStatusCode();//NEED CHECK
+        }
+        return forEntity.getStatusCode();//NEED CHECK
+    }
 }

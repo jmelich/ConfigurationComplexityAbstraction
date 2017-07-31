@@ -87,6 +87,7 @@ public class GetConfigurationController {
             Map<String, String> availableSettings = new HashMap<>();
             availableSettings.put("PortSpeed", available[6].concat("/Auto"));
             availableSettings.put("DuplexMode", available[7].concat("/Auto"));
+            availableSettings.put("AdministrativeStatus", "enable/disable");
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan");

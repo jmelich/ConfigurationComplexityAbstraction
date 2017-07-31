@@ -166,6 +166,7 @@ public class GetConfigurationController {
             info = info[9].split("\\s+");
             currentSettings.put("AdministrativeStatus", info[2]);
             currentSettings.put("CurrentDuplex", info[8]);
+            currentSettings.put("PortSpeed",info[7]);
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);

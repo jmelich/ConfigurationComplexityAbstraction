@@ -117,7 +117,7 @@ public class GetConfigurationController {
         return null;
     }
 
-    @RequestMapping(value = "/connectors/{id}/currentSettings", method = RequestMethod.GET)
+    @RequestMapping(value = "/connectors/{id}/currentSettings", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -5,6 +5,8 @@ import cat.udl.eps.switchconfiguration.domain.Connector;
 import cat.udl.eps.switchconfiguration.domain.Equipment;
 import cat.udl.eps.switchconfiguration.domain.Port;
 import cat.udl.eps.switchconfiguration.repository.ConnectorRepository;
+import cat.udl.eps.switchconfiguration.utils.AvailableSettingsResponse;
+import cat.udl.eps.switchconfiguration.utils.CurrentSettingsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +37,18 @@ public class GetConfigurationController {
 
     @Autowired private ConnectorRepository connectorRepository;
 
-    @RequestMapping(value = "/connectors/{id}/availableSettings", method = RequestMethod.GET)
+    @RequestMapping(value = "/connectors/{id}/availableSettings", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
 
-    public @ResponseBody Map<String, Object>  getAvailableSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+    public @ResponseBody
+    AvailableSettingsResponse getAvailableSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
+
+        AvailableSettingsResponse availableSettingsResponse = new AvailableSettingsResponse();
 
         Connector connector = connectorRepository.findOne(id);
         Port port = connector.getConnectedTo();
@@ -84,10 +89,12 @@ public class GetConfigurationController {
 
             String[] available = info[7].split("\\s+");
 
-            Map<String, String> availableSettings = new HashMap<>();
-            availableSettings.put("PortSpeed", available[6].concat("/Auto"));
-            availableSettings.put("DuplexMode", available[7].concat("/Auto"));
-            availableSettings.put("AdministrativeStatus", "enable/disable");
+            //Map<String, String> availableSettings = new HashMap<>();
+
+            availableSettingsResponse.setPortSpeed(available[6].concat("/Auto"));
+            availableSettingsResponse.setDuplexMode(available[7].concat("/Auto"));
+            availableSettingsResponse.setAdministrativeStatus("enable/disable");
+
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan");
@@ -102,15 +109,10 @@ public class GetConfigurationController {
                     vlans = vlans.concat("/" + info[i].split("\\s+")[0]);
                 }
             }
-            availableSettings.put("AvailableVLANs", vlans);
-
-
-            logger.info(availableSettings.toString());
+            availableSettingsResponse.setAvailableVLANs(vlans);
 
             //RETURN VALUES TO CLIENT
-            Map<String,Object> returns = new HashMap<>();
-            returns.put("AvailableSettings", availableSettings);
-            return returns;
+            return availableSettingsResponse;
         }
         return null;
     }
@@ -121,8 +123,10 @@ public class GetConfigurationController {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
 
-    public @ResponseBody Map<String, Object>  getCurrentSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public @ResponseBody CurrentSettingsResponse  getCurrentSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         logger.info("User Requested Current Speeds of Connector: "+String.valueOf(id));
+
+        CurrentSettingsResponse currentSettingsResponse = new CurrentSettingsResponse();
 
         Connector connector = connectorRepository.findOne(id);
         Port port = connector.getConnectedTo();
@@ -143,7 +147,7 @@ public class GetConfigurationController {
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
             //COLLECT AND MAP ALL RECEIVED DATA
-            Map<String, String> currentSettings = new HashMap<>();
+            //Map<String, String> currentSettings = new HashMap<>();
 
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "show interfaces");
@@ -164,23 +168,23 @@ public class GetConfigurationController {
 
             String[] info = response.getBody().split("\n");
             info = info[9].split("\\s+");
-            currentSettings.put("AdministrativeStatus", info[2]);
-            currentSettings.put("CurrentDuplex", info[8]);
-            currentSettings.put("PortSpeed",info[7]);
+            currentSettingsResponse.setAdministrativeStatus(info[2]);
+            currentSettingsResponse.setCurrentDuplex(info[8]);
+            currentSettingsResponse.setPortSpeed(info[7]);
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);
             info = response.getBody().split("\n");
             try{
-                currentSettings.put("InputBytes", info[7].split("\\s+")[3]);
+                currentSettingsResponse.setInputBytes(info[7].split("\\s+")[3]);
             }catch (ArrayIndexOutOfBoundsException e){
-                currentSettings.put("InputBytes", "0");
+                currentSettingsResponse.setInputBytes("0");
             }
 
             try{
-                currentSettings.put("OutputBytes", info[7].split("\\s+")[5]);
+                currentSettingsResponse.setOutputBytes( info[7].split("\\s+")[5]);
             }catch(ArrayIndexOutOfBoundsException e){
-                currentSettings.put("OutputBytes", "0");
+                currentSettingsResponse.setOutputBytes("0");
             }
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
@@ -196,11 +200,9 @@ public class GetConfigurationController {
                     vlans = vlans.concat("/" + info[i].split("\\s+")[1]);
                 }
             }
-            currentSettings.put("ConnectedToVLANs", vlans);
+            currentSettingsResponse.setConnectedToVLANs(vlans);
 
-            Map<String,Object> returns = new HashMap<>();
-            returns.put("ActuallySettings", currentSettings);
-            return returns;
+            return currentSettingsResponse;
         }
         return null;
     }

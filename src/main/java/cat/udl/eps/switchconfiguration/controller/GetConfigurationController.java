@@ -168,7 +168,11 @@ public class GetConfigurationController {
 
             String[] info = response.getBody().split("\n");
             info = info[9].split("\\s+");
-            currentSettingsResponse.setAdministrativeStatus(info[2]);
+            if(info[2].equals("en")){
+                currentSettingsResponse.setAdministrativeStatus("enable");
+            }else{
+                currentSettingsResponse.setAdministrativeStatus("disable");
+            }
             currentSettingsResponse.setCurrentDuplex(info[8]);
             currentSettingsResponse.setPortSpeed(info[7]);
 

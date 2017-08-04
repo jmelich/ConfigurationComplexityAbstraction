@@ -141,8 +141,8 @@ public class ApplyConfigurationController {
         }
     }
 
-    @RequestMapping(value = "/connectors/{id}/setVLAN", method = RequestMethod.POST)
-    @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = "/connectors/{id}/setVLAN", method = RequestMethod.GET)
+    //@PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }*/
@@ -191,7 +191,7 @@ public class ApplyConfigurationController {
         return forEntity.getStatusCode();//NEED CHECK
     }
 
-    @RequestMapping(value = "/connectors/{id}/setAdministrativeStatus", method = RequestMethod.POST)
+    @RequestMapping(value = "/connectors/{id}/setAdministrativeStatus", method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -242,7 +242,7 @@ public class ApplyConfigurationController {
         return forEntity.getStatusCode();//NEED CHECK
     }
 
-    @RequestMapping(value = "/connectors/{id}/setDuplexMode", method = RequestMethod.POST)
+    @RequestMapping(value = "/connectors/{id}/setDuplexMode", method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -293,7 +293,7 @@ public class ApplyConfigurationController {
         return forEntity.getStatusCode();//NEED CHECK
     }
 
-    @RequestMapping(value = "/connectors/{id}/setPortSpeed", method = RequestMethod.POST)
+    @RequestMapping(value = "/connectors/{id}/setPortSpeed", method = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     /*public @ResponseBody UserDetails getCurrentUser() {
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

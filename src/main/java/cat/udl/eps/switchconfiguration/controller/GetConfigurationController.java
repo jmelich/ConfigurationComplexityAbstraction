@@ -175,6 +175,8 @@ public class GetConfigurationController {
             }
             currentSettingsResponse.setCurrentDuplex(info[8]);
             currentSettingsResponse.setPortSpeed(info[7]);
+            if(currentSettingsResponse.getPortSpeed() == "1G")
+                currentSettingsResponse.setPortSpeed("1000");
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);

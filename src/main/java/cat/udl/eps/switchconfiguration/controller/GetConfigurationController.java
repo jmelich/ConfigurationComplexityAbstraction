@@ -208,6 +208,14 @@ public class GetConfigurationController {
             }
             currentSettingsResponse.setConnectedToVLANs(vlans);
 
+            //MAKE REQUEST WITH SPECIFIED COMMAND: "show running-directory"
+            urlParameters.put("cmdCommand", "show running-directory");
+            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+            logger.info(response.getBody());
+
+            String runningDirectory = response.getBody().split("\n")[10].trim().split(":")[1].replaceAll(",$", "");
+            currentSettingsResponse.setRunningDirectory(runningDirectory);
+
             return currentSettingsResponse;
         }
         return null;

@@ -16,4 +16,5 @@ public class CurrentSettingsResponse {
     private String portSpeed;
     private String administrativeStatus;
     private String connectedToVLANs;
+    private String runningDirectory;
 }

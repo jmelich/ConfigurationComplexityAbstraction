@@ -28,10 +28,6 @@ public class Campus extends UriEntity<Long> {
 
     private String description;
 
-    private long latitude;
-
-    private long longitude;
-
     //@OneToMany(fetch = FetchType.EAGER, cascade = ALL)
     @OneToMany(mappedBy = "isInCampus", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)

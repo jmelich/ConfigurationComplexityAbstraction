@@ -26,9 +26,10 @@ public class Card  extends UriEntity<Long>  {
     @NotBlank
     private String title;
 
+    private String description;
+
     //@NotBlank
     private int numberOfCard;
-
     //@NotBlank
     private int numberOfPorts;
 

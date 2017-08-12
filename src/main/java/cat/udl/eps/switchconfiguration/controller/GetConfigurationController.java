@@ -213,7 +213,7 @@ public class GetConfigurationController {
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
             logger.info(response.getBody());
 
-            String runningDirectory = response.getBody().split("\n")[10].trim().split(":")[1].replaceAll(",$", "");
+            String runningDirectory = response.getBody().split("\n")[10].split(":")[1].replaceAll(",$", "").trim();
             currentSettingsResponse.setRunningDirectory(runningDirectory);
 
             return currentSettingsResponse;

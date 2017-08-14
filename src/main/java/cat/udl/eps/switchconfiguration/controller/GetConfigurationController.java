@@ -97,7 +97,7 @@ public class GetConfigurationController {
 
             //Map<String, String> availableSettings = new HashMap<>();
 
-            availableSettingsResponse.setPortSpeed(available[6].concat("/Auto"));
+            availableSettingsResponse.setPortSpeed(available[6].concat("/Auto").replace("1G","1000"));
             availableSettingsResponse.setDuplexMode(available[7].concat("/Auto"));
             availableSettingsResponse.setAdministrativeStatus("enable/disable");
 

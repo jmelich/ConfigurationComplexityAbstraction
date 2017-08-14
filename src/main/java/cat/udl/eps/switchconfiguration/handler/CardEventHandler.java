@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 @Component
 @Transactional
-@RepositoryEventHandler(Equipment.class)
+@RepositoryEventHandler(Card.class)
 public class CardEventHandler {
     private final Logger logger = LoggerFactory.getLogger(CardEventHandler.class);
     @Autowired
@@ -24,14 +25,13 @@ public class CardEventHandler {
     @HandleAfterCreate
     public void handleCardAfterSave(Card card) {
 
-        List<Port> portsList = new ArrayList<>();
         for(int i=1; i<=card.getNumberOfPorts(); i++){
             Port p = new Port();
             p.setTitle(String.valueOf(i));
             p.setIsInCard(card);
             portRepository.save(p);
+            card.setPorts(Arrays.asList(p));
         }
-        card.setPorts(portsList);
     }
 
 

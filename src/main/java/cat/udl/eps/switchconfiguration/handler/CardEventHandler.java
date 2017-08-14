@@ -24,15 +24,24 @@ public class CardEventHandler {
 
     @HandleAfterCreate
     public void handleCardAfterSave(Card card) {
-        List<Port> portsList = new ArrayList<>();
         for(int i=1; i<=card.getNumberOfPorts(); i++){
             Port p = new Port();
             p.setTitle(String.valueOf(i));
             p.setPortNumber(i);
             p.setIsInCard(card);
-            portRepository.save(p);
+            card.addPort(p);
         }
-        card.setPorts(portsList);
+    }
+
+    @HandleBeforeDelete
+    public void handleCardBeforeDelete(Card card) {
+        for(Port p: card.getPorts()){
+            Connector c = p.getConnector();
+            if(c != null){
+                c.setConnectedTo(null);
+            }
+            p.setConnector(null);
+        }
     }
 
 

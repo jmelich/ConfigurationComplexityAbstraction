@@ -26,11 +26,11 @@ public class Port  extends UriEntity<Long>   {
 
     private int portNumber;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = true)
     private Card isInCard;
 
-    @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo")
+    @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo", cascade = {CascadeType.MERGE,  CascadeType.REFRESH, CascadeType.DETACH})
     @JsonIdentityReference(alwaysAsId = true)
     private Connector connector;
 

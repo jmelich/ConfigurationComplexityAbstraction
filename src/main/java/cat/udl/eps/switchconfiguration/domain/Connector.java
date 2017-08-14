@@ -38,7 +38,7 @@ public class Connector extends UriEntity<Long>   {
     @JsonIdentityReference(alwaysAsId = true)
     private Floor isInFloor;
 
-    @OneToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIdentityReference(alwaysAsId = true)
     private Port connectedTo;
 

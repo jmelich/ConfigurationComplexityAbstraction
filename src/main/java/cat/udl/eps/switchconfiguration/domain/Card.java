@@ -37,7 +37,7 @@ public class Card  extends UriEntity<Long>  {
     @JsonIdentityReference(alwaysAsId = true)
     private Equipment isInEquipment;
 
-    @OneToMany(mappedBy = "isInCard", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInCard", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Port> ports= new ArrayList<>();
@@ -50,7 +50,9 @@ public class Card  extends UriEntity<Long>  {
     @LastModifiedDate
     private ZonedDateTime lastModified;
 
-
+    public void addPort(Port p){
+        this.ports.add(p);
+    }
 
 
 }

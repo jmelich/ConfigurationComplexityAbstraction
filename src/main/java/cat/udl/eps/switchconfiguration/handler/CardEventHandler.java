@@ -22,9 +22,7 @@ public class CardEventHandler {
     private PortRepository portRepository;
 
     @HandleAfterCreate
-    //@PreAuthorize("hasRole('OWNER')")
     public void handleCardAfterSave(Card card) {
-        //logger.info("After creating: {}", card);
 
         List<Port> portsList = new ArrayList<>();
         for(int i=1; i<=card.getNumberOfPorts(); i++){
@@ -32,9 +30,7 @@ public class CardEventHandler {
             p.setTitle(String.valueOf(i));
             p.setIsInCard(card);
             portRepository.save(p);
-            logger.info("port saved");
         }
-        logger.info("After created ports");
         card.setPorts(portsList);
     }
 

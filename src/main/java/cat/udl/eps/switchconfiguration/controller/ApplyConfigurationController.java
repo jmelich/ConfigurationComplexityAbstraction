@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by ubuntu on 27/07/17.
- */
+
 @Controller
 public class ApplyConfigurationController {
     private final Logger logger = LoggerFactory.getLogger(GetConfigurationController.class);
@@ -58,7 +56,6 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
 
@@ -69,7 +66,6 @@ public class ApplyConfigurationController {
             }
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "vlan"+ vlans + " port members");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
@@ -113,7 +109,6 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
 
@@ -167,12 +162,10 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "vlan " + vlan + " members port");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
@@ -217,12 +210,10 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "interfaces ");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
@@ -268,12 +259,10 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "interfaces ");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));
@@ -319,12 +308,10 @@ public class ApplyConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "interfaces ");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));

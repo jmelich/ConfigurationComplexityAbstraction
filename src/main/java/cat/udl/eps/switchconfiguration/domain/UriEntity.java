@@ -11,9 +11,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.io.Serializable;
 
-/**
- * Created by http://rhizomik.net/~roberto/
- */
+
 @MappedSuperclass
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="uri")
 public abstract class UriEntity<ID extends Serializable> implements Persistable<ID> {

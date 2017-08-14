@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by ubuntudesktop on 10/08/17.
- */
+
 @Controller
 public class SaveConfigurationController {
     private final Logger logger = LoggerFactory.getLogger(GetConfigurationController.class);
@@ -56,12 +54,10 @@ public class SaveConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "copy certified " + directory + " make-running-directory");
-            logger.info(urlParameters.get("cmdCommand"));
             urlParameters.put("password", equipment.getPassword());
             urlParameters.put("routerInStack", String.valueOf(equipment.getPositionInStack()));
             urlParameters.put("cardNumber", String.valueOf(card.getNumberOfCard()));

@@ -27,9 +27,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-/**
- * Created by ubuntudesktop on 6/06/17.
- */
+
 @Controller
 public class GetConfigurationController {
     private final Logger logger = LoggerFactory.getLogger(GetConfigurationController.class);
@@ -65,7 +63,6 @@ public class GetConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
 
@@ -99,7 +96,6 @@ public class GetConfigurationController {
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan");
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
-            logger.info(response.getBody());
             info = response.getBody().split("\n");
             String vlans ="";
             for(int i=7; i<info.length-5; i++){
@@ -143,7 +139,6 @@ public class GetConfigurationController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        logger.info(cookies);
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
             //COLLECT AND MAP ALL RECEIVED DATA
@@ -196,7 +191,6 @@ public class GetConfigurationController {
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan members port");
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class, urlParameters);
-            logger.info(response.getBody());
             info = response.getBody().split("\n");
             String vlans ="";
             for(int i=7; i<info.length-5; i++){
@@ -211,7 +205,6 @@ public class GetConfigurationController {
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show running-directory"
             urlParameters.put("cmdCommand", "show running-directory");
             response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
-            logger.info(response.getBody());
 
             String runningDirectory = response.getBody().split("\n")[10].split(":")[1].replaceAll(",$", "").trim();
             currentSettingsResponse.setRunningDirectory(runningDirectory);

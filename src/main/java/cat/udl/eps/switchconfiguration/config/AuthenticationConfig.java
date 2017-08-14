@@ -12,9 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-/**
- * Created by http://rhizomik.net/~roberto/
- */
+
 @Configuration
 @Profile("!Test")
 public class AuthenticationConfig extends GlobalAuthenticationConfigurerAdapter {

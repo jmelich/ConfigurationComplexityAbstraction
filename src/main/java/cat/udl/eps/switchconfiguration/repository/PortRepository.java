@@ -1,6 +1,5 @@
 package cat.udl.eps.switchconfiguration.repository;
 
-import cat.udl.eps.switchconfiguration.domain.Building;
 import cat.udl.eps.switchconfiguration.domain.Port;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;

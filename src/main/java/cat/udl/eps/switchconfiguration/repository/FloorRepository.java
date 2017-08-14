@@ -1,7 +1,6 @@
 package cat.udl.eps.switchconfiguration.repository;
 
 import cat.udl.eps.switchconfiguration.domain.Building;
-import cat.udl.eps.switchconfiguration.domain.Campus;
 import cat.udl.eps.switchconfiguration.domain.Floor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;

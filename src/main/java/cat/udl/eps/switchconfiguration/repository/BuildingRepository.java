@@ -15,5 +15,4 @@ public interface BuildingRepository extends PagingAndSortingRepository<Building,
     List<Building> findByTitleContainingIgnoreCase(@Param("title") String title);
     List<Building> findByDescriptionContaining(@Param("description") String description);
     List<Building> findByTitleContainingIgnoreCaseAndIsInCampus(@Param("title") String title, @Param("campus") Campus campus);
-    //List<Building> findByIsInCampusAndTitleContaining(@Param("title") String title, @Param("campus") Campus campus);
 }

@@ -1,6 +1,5 @@
 package cat.udl.eps.switchconfiguration.repository;
 
-import cat.udl.eps.switchconfiguration.domain.Building;
 import cat.udl.eps.switchconfiguration.domain.Card;
 import cat.udl.eps.switchconfiguration.domain.Equipment;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -12,9 +11,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface CardRepository extends PagingAndSortingRepository<Card, Long> {
-    //List<Card> findByBelongsToAndNumberOfCard(@Param("equipment,number") String equipment, int number);
-    //List<Card> findByDescription(@Param("description") String description);
-    //List<Card> findByTitle(@Param("title") String title);
     List<Card> findByTitleContainingIgnoreCase(@Param("title") String title);
     List<Card> findByTitleContainingIgnoreCaseAndIsInEquipment(@Param("title") String title, @Param("equipment") Equipment equipment);
 }

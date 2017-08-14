@@ -29,12 +29,10 @@ public class SaveConfigurationController {
     private ConnectorRepository connectorRepository;
 
     @RequestMapping(value = "/connectors/{id}/saveConfig", method = RequestMethod.GET)
-    /*public @ResponseBody UserDetails getCurrentUser() {
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }*/
 
     public @ResponseBody
-    HttpStatus saveConfigAndOrCertify(@PathVariable("id") Long id, @RequestParam("directory") String directory, @RequestParam("certify") boolean certify) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    HttpStatus saveConfigAndOrCertify(@PathVariable("id") Long id, @RequestParam("directory") String directory, @RequestParam("certify") boolean certify)
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
         logger.info("User Requested To Save Configuration: " + String.valueOf(id));
 
@@ -51,7 +49,13 @@ public class SaveConfigurationController {
 
         //LOGIN AND GET COOKIES
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
+
+        ResponseEntity<String> forEntity = restTemplate.getForEntity(
+                "http://{equipmentIP}/auth/?&username={username}&password={password}",
+                String.class,
+                urlParameters
+        );
+
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
 
         if (forEntity.getStatusCode() == HttpStatus.OK) {
@@ -69,7 +73,13 @@ public class SaveConfigurationController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand}",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
 
             if (response.getStatusCode() != HttpStatus.OK){
                 return response.getStatusCode();
@@ -81,15 +91,30 @@ public class SaveConfigurationController {
             }
 
             urlParameters.put("cmdCommand", "write memory");
-            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+
+            response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand}",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
 
             if (response.getStatusCode() != HttpStatus.OK){
                 return response.getStatusCode();
             }
 
             if(certify){
+
                 urlParameters.put("cmdCommand", "copy running certified");
-                response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+
+                response = restTemplate.exchange(
+                        "http://{equipmentIP}/cli/aos?cmd={cmdCommand}",
+                        HttpMethod.GET,
+                        entity,
+                        String.class,
+                        urlParameters
+                );
             }
 
             return response.getStatusCode();

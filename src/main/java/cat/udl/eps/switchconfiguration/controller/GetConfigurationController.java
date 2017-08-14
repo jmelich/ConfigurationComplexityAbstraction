@@ -37,12 +37,10 @@ public class GetConfigurationController {
 
     @RequestMapping(value = "/connectors/{id}/availableSettings", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    /*public @ResponseBody UserDetails getCurrentUser() {
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }*/
 
     public @ResponseBody
-    AvailableSettingsResponse getAvailableSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
+    AvailableSettingsResponse getAvailableSettings(@PathVariable("id") Long id)
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException{
 
         logger.info("User Requested Available Speeds of Connector: "+String.valueOf(id));
 
@@ -61,7 +59,12 @@ public class GetConfigurationController {
 
         //LOGIN AND GET COOKIES
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
+        ResponseEntity<String> forEntity = restTemplate.getForEntity(
+                "http://{equipmentIP}/auth/?&username={username}&password={password}",
+                String.class,
+                urlParameters
+        );
+
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
@@ -80,7 +83,13 @@ public class GetConfigurationController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X capability"
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} capability", HttpMethod.GET, entity, String.class, urlParameters);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} capability",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
 
             String[] info = response.getBody().split("\n");
 
@@ -95,7 +104,15 @@ public class GetConfigurationController {
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan");
-            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+
+            response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand}",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
+
             info = response.getBody().split("\n");
             String vlans ="";
             for(int i=7; i<info.length-5; i++){
@@ -115,11 +132,9 @@ public class GetConfigurationController {
 
     @RequestMapping(value = "/connectors/{id}/currentSettings", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("isAuthenticated()")
-    /*public @ResponseBody UserDetails getCurrentUser() {
-        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }*/
 
-    public @ResponseBody CurrentSettingsResponse  getCurrentSettings(@PathVariable("id") Long id) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public @ResponseBody CurrentSettingsResponse  getCurrentSettings(@PathVariable("id") Long id)
+            throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         logger.info("User Requested Current Speeds of Connector: "+String.valueOf(id));
 
         CurrentSettingsResponse currentSettingsResponse = new CurrentSettingsResponse();
@@ -137,12 +152,17 @@ public class GetConfigurationController {
 
         //LOGIN AND GET COOKIES
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> forEntity = restTemplate.getForEntity("http://{equipmentIP}/auth/?&username={username}&password={password}", String.class, urlParameters);
+
+        ResponseEntity<String> forEntity = restTemplate.getForEntity(
+                "http://{equipmentIP}/auth/?&username={username}&password={password}",
+                String.class,
+                urlParameters
+        );
+
         String cookies = forEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
 
         if(forEntity.getStatusCode()== HttpStatus.OK){
             //COLLECT AND MAP ALL RECEIVED DATA
-            //Map<String, String> currentSettings = new HashMap<>();
 
             //URL PARAMETERS TO SET TARGET EQUIPMENT
             urlParameters.put("cmdCommand", "show interfaces");
@@ -159,7 +179,13 @@ public class GetConfigurationController {
 
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X status"
-            ResponseEntity<String> response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} status", HttpMethod.GET, entity, String.class, urlParameters);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} status",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
 
             String[] info = response.getBody().split("\n");
             info = info[9].split("\\s+");
@@ -174,7 +200,14 @@ public class GetConfigurationController {
                 currentSettingsResponse.setPortSpeed("1000");
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show interfaces X/X/X traffic"
-            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic", HttpMethod.GET, entity, String.class, urlParameters);
+            response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber} traffic",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
+
             info = response.getBody().split("\n");
             try{
                 currentSettingsResponse.setInputBytes(info[7].split("\\s+")[3]);
@@ -190,7 +223,14 @@ public class GetConfigurationController {
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show vlan"
             urlParameters.put("cmdCommand", "show vlan members port");
-            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}", HttpMethod.GET, entity, String.class, urlParameters);
+            response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand} {routerInStack}/{cardNumber}/{portNumber}",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
+
             info = response.getBody().split("\n");
             String vlans ="";
             for(int i=7; i<info.length-5; i++){
@@ -204,9 +244,20 @@ public class GetConfigurationController {
 
             //MAKE REQUEST WITH SPECIFIED COMMAND: "show running-directory"
             urlParameters.put("cmdCommand", "show running-directory");
-            response = restTemplate.exchange("http://{equipmentIP}/cli/aos?cmd={cmdCommand}", HttpMethod.GET, entity, String.class, urlParameters);
+            response = restTemplate.exchange(
+                    "http://{equipmentIP}/cli/aos?cmd={cmdCommand}",
+                    HttpMethod.GET,
+                    entity,
+                    String.class,
+                    urlParameters
+            );
 
-            String runningDirectory = response.getBody().split("\n")[10].split(":")[1].replaceAll(",$", "").trim();
+            String runningDirectory = response.getBody()
+                    .split("\n")[10]
+                    .split(":")[1]
+                    .replaceAll(",$", "")
+                    .trim();
+
             currentSettingsResponse.setRunningDirectory(runningDirectory);
 
             return currentSettingsResponse;

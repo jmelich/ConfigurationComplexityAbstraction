@@ -12,8 +12,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface ConnectorRepository extends PagingAndSortingRepository<Connector, Long> {
-    List<Connector> findByDescription(@Param("description") String description);
     List<Connector> findByTitleContainingIgnoreCase(@Param("title") String title);
-    List<Connector> findByDescriptionContaining(@Param("description") String description);
     List<Connector> findByTitleContainingIgnoreCaseAndIsInFloor(@Param("title") String title, @Param("floor") Floor floor);
 }

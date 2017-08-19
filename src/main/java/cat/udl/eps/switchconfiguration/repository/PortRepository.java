@@ -11,8 +11,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface PortRepository extends PagingAndSortingRepository<Port, Long> {
-    List<Port> findByDescription(@Param("description") String description);
     List<Port> findByTitle(@Param("title") String title);
-    List<Port> findByDescriptionContaining(@Param("description") String description);
     List<Port> findByTitleContainingIgnoreCaseAndIsInCardAndConnectorIsNullOrderByPortNumberAsc(@Param("title") String title, @Param("card") Card card);
 }

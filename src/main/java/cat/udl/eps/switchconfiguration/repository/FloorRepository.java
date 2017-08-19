@@ -11,8 +11,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface FloorRepository extends PagingAndSortingRepository<Floor, Long> {
-    List<Floor> findByDescription(@Param("description") String description);
     List<Floor> findByTitleContainingIgnoreCase(@Param("title") String title);
-    List<Floor> findByDescriptionContainingIgnoreCase(@Param("description") String description);
     List<Floor> findByTitleContainingIgnoreCaseAndIsInBuilding(@Param("title") String title, @Param("building") Building building);
 }

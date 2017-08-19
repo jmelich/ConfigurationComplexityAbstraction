@@ -12,8 +12,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface EquipmentRepository extends PagingAndSortingRepository<Equipment, Long> {
-    List<Equipment> findByDescription(@Param("description") String description);
     List<Equipment> findByTitleContainingIgnoreCase(@Param("title") String title);
-    List<Equipment> findByDescriptionContaining(@Param("description") String description);
     List<Equipment> findByTitleContainingIgnoreCaseAndIsInDealer(@Param("title") String title, @Param("dealer") Dealer dealer);
 }

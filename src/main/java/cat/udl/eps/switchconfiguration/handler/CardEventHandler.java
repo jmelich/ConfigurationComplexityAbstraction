@@ -9,14 +9,11 @@ import org.springframework.data.rest.core.annotation.*;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 @Component
 @Transactional
-@RepositoryEventHandler(Equipment.class)
+@RepositoryEventHandler(Card.class)
 public class CardEventHandler {
     private final Logger logger = LoggerFactory.getLogger(CardEventHandler.class);
     @Autowired

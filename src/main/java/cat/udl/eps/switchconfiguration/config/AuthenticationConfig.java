@@ -25,6 +25,11 @@ public class AuthenticationConfig extends GlobalAuthenticationConfigurerAdapter 
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());
+        auth.inMemoryAuthentication()
+                                .passwordEncoder(new BCryptPasswordEncoder())
+                                .withUser("admin")
+                                .password(new BCryptPasswordEncoder().encode("password"))
+                                .roles("ADMIN");
 
             User user = new DataUser();
             user.setUsername("user");

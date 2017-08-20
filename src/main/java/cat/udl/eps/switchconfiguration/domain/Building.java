@@ -6,12 +6,8 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,16 +33,5 @@ public class Building extends UriEntity<Long>  {
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
     private Campus isInCampus;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @ReadOnlyProperty
-    private ZonedDateTime dateTime;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @LastModifiedDate
-    private ZonedDateTime lastModified;
-
-
-
 
 }

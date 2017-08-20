@@ -4,12 +4,8 @@ package cat.udl.eps.switchconfiguration.domain;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 
 
 @Entity
@@ -33,13 +29,5 @@ public class Port  extends UriEntity<Long>   {
     @OneToOne(fetch=FetchType.EAGER, mappedBy="connectedTo", cascade = {CascadeType.MERGE,  CascadeType.REFRESH, CascadeType.DETACH})
     @JsonIdentityReference(alwaysAsId = true)
     private Connector connector;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @ReadOnlyProperty
-    private ZonedDateTime dateTime;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @LastModifiedDate
-    private ZonedDateTime lastModified;
 
 }

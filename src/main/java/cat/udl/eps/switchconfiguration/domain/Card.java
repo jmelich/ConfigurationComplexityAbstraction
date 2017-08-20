@@ -6,12 +6,8 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,14 +37,6 @@ public class Card  extends UriEntity<Long>  {
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Port> ports= new ArrayList<>();
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @ReadOnlyProperty
-    private ZonedDateTime dateTime;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @LastModifiedDate
-    private ZonedDateTime lastModified;
 
     public void addPort(Port p){
         this.ports.add(p);

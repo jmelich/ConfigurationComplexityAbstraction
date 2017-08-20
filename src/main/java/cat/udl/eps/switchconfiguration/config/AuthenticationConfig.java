@@ -25,33 +25,10 @@ public class AuthenticationConfig extends GlobalAuthenticationConfigurerAdapter 
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());
-        auth.inMemoryAuthentication()
-                .passwordEncoder(new BCryptPasswordEncoder())
-                .withUser("admin")
-                .password("$2a$10$B1dcscvS/lgiBnGdkhhupew8AhbjqUL7TjdA2ggvxQhs5jN7KVSMC")
-                .roles("ADMIN");
-
-        // Use encrypted secret password when deploying publicly in Heroku
-        if(environment.acceptsProfiles("heroku")) {
-            User owner = new DataUser();
-            owner.setUsername("owner");
-            owner.setPassword("$2a$10$B1dcscvS/lgiBnGdkhhupew8AhbjqUL7TjdA2ggvxQhs5jN7KVSMC");
-            userRepository.save(owner);
-
-            User user = new DataUser();
-            user.setUsername("user");
-            user.setPassword("$2a$10$B1dcscvS/lgiBnGdkhhupew8AhbjqUL7TjdA2ggvxQhs5jN7KVSMC");
-            userRepository.save(user);
-        } else {
-            User owner = new DataUser();
-            owner.setUsername("owner");
-            owner.setPassword(new BCryptPasswordEncoder().encode("password"));
-            userRepository.save(owner);
 
             User user = new DataUser();
             user.setUsername("user");
             user.setPassword(new BCryptPasswordEncoder().encode("password"));
             userRepository.save(user);
-        }
     }
 }

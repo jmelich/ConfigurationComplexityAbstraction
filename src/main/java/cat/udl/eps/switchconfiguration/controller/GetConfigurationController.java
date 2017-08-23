@@ -116,10 +116,12 @@ public class GetConfigurationController {
             info = response.getBody().split("\n");
             String vlans ="";
             for(int i=7; i<info.length-5; i++){
-                if(i==7){
-                    vlans = vlans.concat(info[i].split("\\s+")[0]);
-                }else{
-                    vlans = vlans.concat("/" + info[i].split("\\s+")[0]);
+                if(info[i].split("\\s+")[1].equalsIgnoreCase("std")){
+                    if(i==7){
+                        vlans = vlans.concat(info[i].split("\\s+")[0]);
+                    }else{
+                        vlans = vlans.concat("/" + info[i].split("\\s+")[0]);
+                    }
                 }
             }
             availableSettingsResponse.setAvailableVLANs(vlans);

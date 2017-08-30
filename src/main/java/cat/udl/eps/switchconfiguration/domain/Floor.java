@@ -34,7 +34,7 @@ public class Floor  extends UriEntity<Long>  {
     @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
-    private List<Dealer> dealers = new ArrayList<>();
+    private List<EquipmentRoom> equipmentRooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "isInFloor", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)

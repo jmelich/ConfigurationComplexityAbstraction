@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Dealer  extends UriEntity<Long>  {
+public class EquipmentRoom extends UriEntity<Long>  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,7 +28,7 @@ public class Dealer  extends UriEntity<Long>  {
     @JsonIdentityReference(alwaysAsId = true)
     private Floor isInFloor;
 
-    @OneToMany(mappedBy = "isInDealer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "isInEquipmentRoom", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Equipment> equipments = new ArrayList<>();

@@ -37,7 +37,7 @@ public class Equipment extends UriEntity<Long> {
 
     @ManyToOne
     @JsonIdentityReference(alwaysAsId = true)
-    private Dealer isInDealer;
+    private EquipmentRoom isInEquipmentRoom;
 
     @OneToMany(mappedBy = "isInEquipment", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
